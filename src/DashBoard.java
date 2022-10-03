@@ -11,22 +11,34 @@ import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import java.awt.event.ActionListener;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
+import org.bson.BSONObject;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.JScrollBar;
 
 
 
@@ -49,6 +61,10 @@ public class DashBoard {
 	private JTextField textField_7;
 	
 	MongoDatabase db;
+	private JTextField textField_8;
+	private JTextField textField_9;
+	private JTextField textField_10;
+	private JTable table;
 	
 
 
@@ -427,6 +443,12 @@ public class DashBoard {
 		panel_4.add(lblNewLabel_5);
 		
 		JButton btnNewButton_4 = new JButton("");
+		btnNewButton_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
 		btnNewButton_4.setIcon(new ImageIcon("C:\\Users\\Zohaib\\Downloads\\library (1).png"));
 		btnNewButton_4.setBounds(409, 262, 124, 68);
 		panel_4.add(btnNewButton_4);
@@ -499,6 +521,49 @@ public class DashBoard {
 		panel_5.add(lblNewLabel_5_1_1_1);
 		
 		JButton btnNewButton_4_1_1_1 = new JButton("");
+		btnNewButton_4_1_1_1.addActionListener(new ActionListener() {
+			@SuppressWarnings("null")
+			public void actionPerformed(ActionEvent e) {
+				 MongoClient mongoClient = null;
+				 
+		            
+		            try {
+		                mongoClient = new MongoClient( "localhost" , 27017 );
+		                  MongoDatabase database = mongoClient.getDatabase("SSProject");
+		                  MongoCollection<Document> collection = database.getCollection("Books");
+		                  FindIterable<Document> iterDoc = collection.find();
+		                  Iterator<Document> it = iterDoc.iterator();
+                           System.out.println("till Now everything is Good ");
+		                String[] columnNames = {"id" ,"BookName", "Author", "Edition"};
+		                DefaultTableModel model = (DefaultTableModel) table.getModel();
+		                model.setColumnIdentifiers(columnNames);
+		                
+		                      
+		               
+		                 while(it.hasNext()) {
+		                       Document dc  = it.next();
+		                       String id = dc.get("_id").toString();
+		                       String name = dc.get("BookName").toString();
+		                       String author = dc.get("Author").toString();
+		                       String edition = dc.get("Edition").toString();
+		                       model.addRow(new Object[] {id,name,author,edition});
+		                       
+		                 }
+		                
+		                table.setModel(model);
+		                tabbedPane_1.setSelectedIndex(6);
+		                
+		                mongoClient.close();
+		            }
+		            
+		            finally {
+		                
+		                if (mongoClient != null) {
+		                     mongoClient.close();
+		                }   
+		            }
+			}
+		});
 		btnNewButton_4_1_1_1.setIcon(new ImageIcon("C:\\Users\\Zohaib\\Downloads\\library (1).png"));
 		btnNewButton_4_1_1_1.setBounds(728, 255, 124, 68);
 		panel_5.add(btnNewButton_4_1_1_1);
@@ -511,6 +576,11 @@ public class DashBoard {
 		panel_5.add(lblNewLabel_5_2_1);
 		
 		JButton btnNewButton_4_2_1 = new JButton("");
+		btnNewButton_4_2_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			    tabbedPane_1.setSelectedIndex(11);
+			}
+		});
 		btnNewButton_4_2_1.setIcon(new ImageIcon("C:\\Users\\Zohaib\\Downloads\\update.png"));
 		btnNewButton_4_2_1.setBounds(138, 485, 124, 68);
 		panel_5.add(btnNewButton_4_2_1);
@@ -540,8 +610,23 @@ public class DashBoard {
 		panel_5.add(btnNewButton_4_1_1_1_1);
 		
 		JPanel panel_6 = new JPanel();
+		panel_6.setBackground(new Color(0, 204, 204));
 		tabbedPane_1.addTab("SVB", null, panel_6, null);
 		panel_6.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(167, 79, 667, 524);
+		panel_6.add(scrollPane);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+			}
+		));
+		scrollPane.setViewportView(table);
+		table.setBackground(new Color(51, 204, 204));
 		
 		JPanel panel_7 = new JPanel();
 		tabbedPane_1.addTab("SIB", null, panel_7, null);
@@ -560,8 +645,86 @@ public class DashBoard {
 		panel_10.setLayout(null);
 		
 		JPanel panel_11 = new JPanel();
+		panel_11.setBackground(new Color(102, 102, 102));
 		tabbedPane_1.addTab("LAB", null, panel_11, null);
 		panel_11.setLayout(null);
+		
+		JLabel lblNewLabel_6 = new JLabel("Enter Book Name");
+		lblNewLabel_6.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+		lblNewLabel_6.setForeground(Color.WHITE);
+		lblNewLabel_6.setBounds(427, 170, 126, 24);
+		panel_11.add(lblNewLabel_6);
+		
+		textField_8 = new JTextField();
+		textField_8.setForeground(Color.WHITE);
+		textField_8.setBackground(Color.GRAY);
+		textField_8.setBounds(385, 193, 210, 36);
+		panel_11.add(textField_8);
+		textField_8.setColumns(10);
+		
+		JLabel lblNewLabel_6_1 = new JLabel("Enter Author Name");
+		lblNewLabel_6_1.setForeground(Color.WHITE);
+		lblNewLabel_6_1.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+		lblNewLabel_6_1.setBounds(427, 292, 126, 24);
+		panel_11.add(lblNewLabel_6_1);
+		
+		textField_9 = new JTextField();
+		textField_9.setForeground(Color.WHITE);
+		textField_9.setColumns(10);
+		textField_9.setBackground(Color.GRAY);
+		textField_9.setBounds(385, 313, 210, 36);
+		panel_11.add(textField_9);
+		
+		JLabel lblNewLabel_6_1_1 = new JLabel("Enter Book Edition");
+		lblNewLabel_6_1_1.setForeground(Color.WHITE);
+		lblNewLabel_6_1_1.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+		lblNewLabel_6_1_1.setBounds(427, 433, 126, 24);
+		panel_11.add(lblNewLabel_6_1_1);
+		
+		textField_10 = new JTextField();
+		textField_10.setForeground(Color.WHITE);
+		textField_10.setColumns(10);
+		textField_10.setBackground(Color.GRAY);
+		textField_10.setBounds(385, 455, 210, 36);
+		panel_11.add(textField_10);
+		
+		JButton btnNewButton_5 = new JButton("Add");
+		btnNewButton_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String bookName= textField_8.getText().toString();
+				String Author= textField_9.getText().toString();
+				String edition= textField_10.getText().toString();
+				try {
+					String uri = "mongodb://localhost:27017";
+					  Logger.getLogger("org.mongodb.driver").setLevel(Level.WARNING);
+						MongoClientURI url = new MongoClientURI(uri);
+						 try (MongoClient client = new MongoClient(url)) {
+							 db = client.getDatabase("SSProject");
+							 System.out.println("connection established with Database");
+							 MongoCollection<Document> collection = db.getCollection("Books");
+							    
+							    Document dc = new Document("BookName",bookName);
+							    dc.append("Author",Author );
+							    dc.append("Edition",edition);
+							    collection.insertOne(dc);
+						}
+					
+				    JOptionPane.showMessageDialog(null, "Data Added successfully into Collection");
+//				    tabbedPane_1.setSelectedIndex(1);	
+				    textField_8.setText("");
+				    textField_9.setText("");
+				    textField_10.setText("");
+				}
+				catch(Exception e1) {
+					System.out.println(e1.getMessage());
+				}
+
+				
+				
+			}
+		});
+		btnNewButton_5.setBounds(445, 525, 85, 21);
+		panel_11.add(btnNewButton_5);
 		
 		JPanel panel_12 = new JPanel();
 		tabbedPane_1.addTab("LRB", null, panel_12, null);
