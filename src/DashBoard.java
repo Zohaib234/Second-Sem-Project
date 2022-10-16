@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 import org.bson.BSONObject;
@@ -109,14 +110,20 @@ public class DashBoard {
 					 MongoCollection<Document> collection = db.getCollection("IssuedBooks");
 					    
 					    Document dc = new Document("issuedbookname",textField_17.getText().toString());
-					    if(rdbtnNewRadioButton.isSelected()) {dc.append("Duration", rdbtnNewRadioButton.getText().toString());}
-					    else if(rdbtnIssueForComplete.isSelected()) {dc.append("Duration",rdbtnIssueForComplete.getText().toString());}
+					    
+					    if(rdbtnNewRadioButton.isSelected()) {
+					    	dc.append("Duration", rdbtnNewRadioButton.getText());}
+					    
+					    else if(rdbtnIssueForComplete.isSelected()) {
+					    	dc.append("Duration",rdbtnIssueForComplete.getText());}
+					    
+					    
 					    
 					    dc.append("Date of Issuence", strDate);
 					    collection.insertOne(dc);
 				}
 			
-		    JOptionPane.showMessageDialog(null, "Data Added successfully into Collection");
+		    JOptionPane.showMessageDialog(null, "You just issued a Book successfully ");
 //		    tabbedPane_1.setSelectedIndex(1);	
 		}
 		catch(Exception e1) {
@@ -211,16 +218,27 @@ public class DashBoard {
 
 	/**
 	 * Launch the application.
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 	   
-	   
+	
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					DashBoard window = new DashBoard();
-					window.frmMuetLibraryManagement.setVisible(true);
+					   myThread t1 = new myThread();
+					   t1.start();
+					   t1.join();
+					   Timer timer = new Timer(9550, (ActionListener) new ActionListener(){
+				             public void actionPerformed(ActionEvent evt) {
+				            	 DashBoard window = new DashBoard();
+									window.frmMuetLibraryManagement.setVisible(true);
+				             }
+				         });
+				         timer.setRepeats(false);
+				         timer.start();
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -230,8 +248,10 @@ public class DashBoard {
 
 	/**
 	 * Create the application.
+	 * @wbp.parser.entryPoint
 	 */
 	public DashBoard() {
+		
 		initialize();
 		
 	}
@@ -253,8 +273,9 @@ public class DashBoard {
 		tabbedPane_1.setBounds(0, 0, 1011, 723);
 		frmMuetLibraryManagement.getContentPane().add(tabbedPane_1);
 		
+		
 		JPanel panel_1 = new JPanel();
-		tabbedPane_1.addTab("Intro", null, panel_1, null);
+		tabbedPane_1.addTab("", null, panel_1, null);
 		panel_1.setLayout(null);
 		
 		JLabel lblNewLabel_1 = new JLabel("Welcome to Muet Library");
@@ -303,7 +324,7 @@ public class DashBoard {
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(102, 0, 153));
-		tabbedPane_1.addTab("Student", null, panel_2, null);
+		tabbedPane_1.addTab("", null, panel_2, null);
 		panel_2.setLayout(null);
 		
 		JLabel lblNewLabel_1_1 = new JLabel(" Muet Library Sign In Portal");
@@ -397,9 +418,19 @@ public class DashBoard {
 		lblNewLabel_4_2.setFont(new Font("Tahoma", Font.BOLD, 12));
 		panel_2.add(lblNewLabel_4_2);
 		
+		JButton btnNewButton_9 = new JButton("Back to Home");
+		btnNewButton_9.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(0);
+			}
+		});
+		btnNewButton_9.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9.setBounds(10, 10, 145, 32);
+		panel_2.add(btnNewButton_9);
+		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(153, 102, 153));
-		tabbedPane_1.addTab("Librarian", null, panel, null);
+		tabbedPane_1.addTab("", null, panel, null);
 		panel.setLayout(null);
 		
 		JLabel lblNewLabel_1_1_2 = new JLabel(" Muet Library Admin Portal");
@@ -471,9 +502,20 @@ public class DashBoard {
 		btnNewButton_2_2.setBounds(416, 525, 85, 27);
 		panel.add(btnNewButton_2_2);
 		
+		JButton btnNewButton_9_1 = new JButton("Back to Home");
+		btnNewButton_9_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(0);
+				
+			}
+		});
+		btnNewButton_9_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1.setBounds(0, 0, 145, 32);
+		panel.add(btnNewButton_9_1);
+		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(new Color(102, 0, 204));
-		tabbedPane_1.addTab("Sign Up", null, panel_3, null);
+		tabbedPane_1.addTab(null, null, panel_3, null);
 		panel_3.setLayout(null);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel(" Muet Library Sign Up Portal");
@@ -531,7 +573,7 @@ public class DashBoard {
 							    collection.insertOne(dc);
 						}
 					
-				    JOptionPane.showMessageDialog(null, "Data Added successfully into Collection");
+				    JOptionPane.showMessageDialog(null, "Account created successfully ");
 				    tabbedPane_1.setSelectedIndex(1);	
 				}
 				catch(Exception e1) {
@@ -567,9 +609,19 @@ public class DashBoard {
 		textField_5.setBounds(377, 401, 175, 32);
 		panel_3.add(textField_5);
 		
+		JButton btnNewButton_9_1_1 = new JButton("Back to Log In");
+		btnNewButton_9_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(1);
+			}
+		});
+		btnNewButton_9_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_1.setBounds(0, 10, 145, 32);
+		panel_3.add(btnNewButton_9_1_1);
+		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBackground(new Color(102, 102, 153));
-		tabbedPane_1.addTab("S-Dashboard", null, panel_4, null);
+		tabbedPane_1.addTab("", null, panel_4, null);
 		panel_4.setLayout(null);
 		
 		JLabel lblNewLabel_1_2 = new JLabel("Welcome to Muet Library Student Section");
@@ -605,6 +657,11 @@ public class DashBoard {
 		panel_4.add(lblNewLabel_5_1);
 		
 		JButton btnNewButton_4_1 = new JButton("");
+		btnNewButton_4_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(9);
+			}
+		});
 		btnNewButton_4_1.setIcon(new ImageIcon("C:\\Users\\Zohaib\\Downloads\\book.png"));
 		btnNewButton_4_1.setBounds(622, 232, 124, 68);
 		panel_4.add(btnNewButton_4_1);
@@ -681,9 +738,29 @@ public class DashBoard {
 		btnNewButton_4_1_1_2.setBounds(622, 413, 124, 68);
 		panel_4.add(btnNewButton_4_1_1_2);
 		
+		JButton btnNewButton_9_1_2 = new JButton("Back to Home");
+		btnNewButton_9_1_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 tabbedPane_1.setSelectedIndex(0);
+			}
+		});
+		btnNewButton_9_1_2.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2.setBounds(0, 10, 145, 32);
+		panel_4.add(btnNewButton_9_1_2);
+		
+		JButton btnNewButton_9_1_2_1 = new JButton("Log Off");
+		btnNewButton_9_1_2_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(1);
+			}
+		});
+		btnNewButton_9_1_2_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2_1.setBounds(851, 14, 145, 32);
+		panel_4.add(btnNewButton_9_1_2_1);
+		
 		JPanel panel_5 = new JPanel();
 		panel_5.setBackground(new Color(51, 153, 255));
-		tabbedPane_1.addTab("L_dashboard", null, panel_5, null);
+		tabbedPane_1.addTab("", null, panel_5, null);
 		panel_5.setLayout(null);
 		
 		JLabel lblNewLabel_1_2_1 = new JLabel("Welcome to Muet Library Admin Section");
@@ -729,7 +806,7 @@ public class DashBoard {
 		                 }
 		                
 		                table_1.setModel(model);
-//		                tabbedPane_1.setSelectedIndex(6);
+		                tabbedPane_1.setSelectedIndex(11);
 		                
 		                mongoClient.close();
 		            }
@@ -756,6 +833,11 @@ public class DashBoard {
 		panel_5.add(lblNewLabel_5_1_2);
 		
 		JButton btnNewButton_4_1_2 = new JButton("");
+		btnNewButton_4_1_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 tabbedPane_1.setSelectedIndex(12);
+			}
+		});
 		btnNewButton_4_1_2.setIcon(new ImageIcon("C:\\Users\\Zohaib\\Downloads\\presentation.png"));
 		btnNewButton_4_1_2.setBounds(422, 255, 124, 68);
 		panel_5.add(btnNewButton_4_1_2);
@@ -789,7 +871,7 @@ public class DashBoard {
 		JButton btnNewButton_4_2_1 = new JButton("");
 		btnNewButton_4_2_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			    tabbedPane_1.setSelectedIndex(12);
+			    tabbedPane_1.setSelectedIndex(13);
 			}
 		});
 		btnNewButton_4_2_1.setIcon(new ImageIcon("C:\\Users\\Zohaib\\Downloads\\update.png"));
@@ -806,7 +888,7 @@ public class DashBoard {
 		JButton btnNewButton_4_1_2_1 = new JButton("");
 		btnNewButton_4_1_2_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tabbedPane_1.setSelectedIndex(7);
+				tabbedPane_1.setSelectedIndex(8);
 			}
 		});
 		btnNewButton_4_1_2_1.setIcon(new ImageIcon("C:\\Users\\Zohaib\\Downloads\\remove.png"));
@@ -821,13 +903,38 @@ public class DashBoard {
 		panel_5.add(lblNewLabel_5_1_1_1_1);
 		
 		JButton btnNewButton_4_1_1_1_1 = new JButton("");
+		btnNewButton_4_1_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(7);
+			}
+		});
 		btnNewButton_4_1_1_1_1.setIcon(new ImageIcon("C:\\Users\\Zohaib\\Downloads\\phonebook.png"));
 		btnNewButton_4_1_1_1_1.setBounds(728, 485, 124, 68);
 		panel_5.add(btnNewButton_4_1_1_1_1);
 		
+		JButton btnNewButton_9_1_3 = new JButton("Back to Home");
+		btnNewButton_9_1_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(0);
+			}
+		});
+		btnNewButton_9_1_3.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_3.setBounds(0, 0, 145, 32);
+		panel_5.add(btnNewButton_9_1_3);
+		
+		JButton btnNewButton_9_1_2_1_1 = new JButton("Log Off");
+		btnNewButton_9_1_2_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(2);
+			}
+		});
+		btnNewButton_9_1_2_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2_1_1.setBounds(851, 4, 145, 32);
+		panel_5.add(btnNewButton_9_1_2_1_1);
+		
 		JPanel panel_6 = new JPanel();
 		panel_6.setBackground(new Color(0, 204, 204));
-		tabbedPane_1.addTab("SVB", null, panel_6, null);
+		tabbedPane_1.addTab("", null, panel_6, null);
 		panel_6.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -844,9 +951,35 @@ public class DashBoard {
 		scrollPane.setViewportView(table);
 		table.setBackground(Color.WHITE);
 		
+		JButton btnNewButton_9_1_3_1 = new JButton("Back to S_DashBoard");
+		btnNewButton_9_1_3_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel dm = (DefaultTableModel)table.getModel();
+				dm.getDataVector().removeAllElements();
+				dm.fireTableDataChanged();
+				tabbedPane_1.setSelectedIndex(4);
+			}
+		});
+		btnNewButton_9_1_3_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_3_1.setBounds(10, 10, 190, 32);
+		panel_6.add(btnNewButton_9_1_3_1);
+		
+		JButton btnNewButton_9_1_2_1_1_1 = new JButton("Back to Admin_DashBoard");
+		btnNewButton_9_1_2_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel dm = (DefaultTableModel)table.getModel();
+				dm.getDataVector().removeAllElements();
+				dm.fireTableDataChanged();
+				tabbedPane_1.setSelectedIndex(5);
+			}
+		});
+		btnNewButton_9_1_2_1_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2_1_1_1.setBounds(773, 4, 223, 32);
+		panel_6.add(btnNewButton_9_1_2_1_1_1);
+		
 		JPanel panel_13 = new JPanel();
 		panel_13.setBackground(new Color(70, 130, 180));
-		tabbedPane_1.addTab("LUB", null, panel_13, null);
+		tabbedPane_1.addTab("", null, panel_13, null);
 		panel_13.setLayout(null);
 		
 		JLabel lblNewLabel_8 = new JLabel(" Book Name");
@@ -900,7 +1033,7 @@ public class DashBoard {
 							 MongoCollection<Document> collection = db.getCollection("Books");
 							 
 							 Document data = collection.find(new Document("BookName",bookName)).first();
-							 if(data==null) {JOptionPane.showMessageDialog(null, "email or password incorrect");
+							 if(data==null) {JOptionPane.showMessageDialog(null, "Book Not Found on DataBase");
 							    textField_12.setText("");
 							 }
 							 else if(data.containsValue(bookName)==true ) {
@@ -958,7 +1091,7 @@ public class DashBoard {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(name + " " + author + " " + edition);
 				
-				int result = JOptionPane.showConfirmDialog(null, "are you sure you want to delete this book it will not be restored",null, JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+				int result = JOptionPane.showConfirmDialog(null, "are you sure you want to Update this Book",null, JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
 				if(result==JOptionPane.YES_OPTION) {
 					String uri = "mongodb://localhost:27017";
 					  Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
@@ -973,8 +1106,11 @@ public class DashBoard {
 							  UpdateResult result1 = collection.updateOne(Filters.eq("BookName", name), Updates.set("BookName", textField_13.getText()));
 							  result1 = collection.updateOne(Filters.eq("Author", author), Updates.set("Author", textField_14.getText()));
 							  result1 = collection.updateOne(Filters.eq("Edition",edition), Updates.set("Edition", textField_15.getText()));
-							   System.out.println("BookName Updated successfulyy" + result1.getModifiedCount());
-							 
+//							   System.out.println("BookName Updated successfulyy" + result1.getModifiedCount());
+							  JOptionPane.showMessageDialog(frmMuetLibraryManagement, "Book's Information Updated Successfully");
+							  textField_13.setText("");
+							  textField_14.setText("");
+							  textField_15.setText("");
 							 
 							 
 							 
@@ -988,9 +1124,19 @@ public class DashBoard {
 		btnNewButton_5_1.setBounds(425, 561, 85, 21);
 		panel_13.add(btnNewButton_5_1);
 		
+		JButton btnNewButton_9_1_2_1_1_1_1 = new JButton("Back to Admin_DashBoard");
+		btnNewButton_9_1_2_1_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(5);
+			}
+		});
+		btnNewButton_9_1_2_1_1_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2_1_1_1_1.setBounds(760, 10, 223, 32);
+		panel_13.add(btnNewButton_9_1_2_1_1_1_1);
+		
 		JPanel panel_12 = new JPanel();
 		panel_12.setBackground(new Color(102, 51, 102));
-		tabbedPane_1.addTab("LRB", null, panel_12, null);
+		tabbedPane_1.addTab("", null, panel_12, null);
 		panel_12.setLayout(null);
 		
 		JLabel lblNewLabel_7 = new JLabel("Enter Book Name to Remove from Library");
@@ -1017,7 +1163,7 @@ public class DashBoard {
 		                  MongoCollection<Document> collection = database.getCollection("Books");
 		                  collection.deleteOne(Filters.eq("BookName", textField_11.getText()));
 		                  System.out.println("book Deleted");
-		                  JOptionPane.showMessageDialog(frmMuetLibraryManagement, "Book Deleted Successfulyy");
+		                  JOptionPane.showMessageDialog(frmMuetLibraryManagement, "Book removed Successfulyy");
 					}
 					catch (Exception e2) {System.out.println(e2.getMessage());}
 					
@@ -1028,9 +1174,19 @@ public class DashBoard {
 		btnNewButton_6.setBounds(409, 347, 85, 21);
 		panel_12.add(btnNewButton_6);
 		
+		JButton btnNewButton_9_1_2_1_1_1_1_1 = new JButton("Back to Admin_DashBoard");
+		btnNewButton_9_1_2_1_1_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(5);
+			}
+		});
+		btnNewButton_9_1_2_1_1_1_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2_1_1_1_1_1.setBounds(773, 10, 223, 32);
+		panel_12.add(btnNewButton_9_1_2_1_1_1_1_1);
+		
 		JPanel panel_7 = new JPanel();
 		panel_7.setBackground(SystemColor.activeCaption);
-		tabbedPane_1.addTab("SIB", null, panel_7, null);
+		tabbedPane_1.addTab("", null, panel_7, null);
 		panel_7.setLayout(null);
 		
 		JLabel lblNewLabel_7_2 = new JLabel("Enter Book Name to issue from Library");
@@ -1069,7 +1225,7 @@ public class DashBoard {
 						 mongoClient = new MongoClient( "localhost" , 27017 );
 		                  MongoDatabase database = mongoClient.getDatabase("SSProject");
 		                  MongoCollection<Document> collection = database.getCollection("Books");
-		                  Document data = collection.find(new Document("BookName",textField_17.getText())).first();
+		                  FindIterable<Document> data = collection.find(new Document("BookName",textField_17.getText()));
 		                  if(data==null) {JOptionPane.showMessageDialog(frmMuetLibraryManagement, "The Book You are trying to borrow is not available in our DataBase");
 		                  textField_17.setText("");
 		                  G.clearSelection();
@@ -1092,10 +1248,19 @@ public class DashBoard {
 		btnNewButton_6_2.setBounds(398, 599, 89, 27);
 		panel_7.add(btnNewButton_6_2);
 		
+		JButton btnNewButton_9_1_3_1_1 = new JButton("Back to S_DashBoard");
+		btnNewButton_9_1_3_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(4);			}
+		});
+		btnNewButton_9_1_3_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_3_1_1.setBounds(10, 10, 190, 32);
+		panel_7.add(btnNewButton_9_1_3_1_1);
+		
 		
 		JPanel panel_8 = new JPanel();
 		panel_8.setBackground(new Color(153, 102, 102));
-		tabbedPane_1.addTab("SRB", null, panel_8, null);
+		tabbedPane_1.addTab("", null, panel_8, null);
 		panel_8.setLayout(null);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
@@ -1105,9 +1270,22 @@ public class DashBoard {
 		table_2 = new JTable();
 		scrollPane_2.setViewportView(table_2);
 		
+		JButton btnNewButton_9_1_3_1_1_1 = new JButton("Back to S_DashBoard");
+		btnNewButton_9_1_3_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel dm = (DefaultTableModel)table_2.getModel();
+				dm.getDataVector().removeAllElements();
+				dm.fireTableDataChanged();
+				tabbedPane_1.setSelectedIndex(4);
+			}
+		});
+		btnNewButton_9_1_3_1_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_3_1_1_1.setBounds(0, 0, 190, 32);
+		panel_8.add(btnNewButton_9_1_3_1_1_1);
+		
 		JPanel panel_9 = new JPanel();
 		panel_9.setBackground(new Color(112, 128, 144));
-		tabbedPane_1.addTab("LVS", null, panel_9, null);
+		tabbedPane_1.addTab("", null, panel_9, null);
 		panel_9.setLayout(null);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -1117,9 +1295,22 @@ public class DashBoard {
 		table_1 = new JTable();
 		scrollPane_1.setViewportView(table_1);
 		
+		JButton btnNewButton_9_1_2_1_1_1_1_1_1 = new JButton("Back to Admin_DashBoard");
+		btnNewButton_9_1_2_1_1_1_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel dm = (DefaultTableModel)table_1.getModel();
+				dm.getDataVector().removeAllElements();
+				dm.fireTableDataChanged();
+				tabbedPane_1.setSelectedIndex(5);
+			}
+		});
+		btnNewButton_9_1_2_1_1_1_1_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2_1_1_1_1_1_1.setBounds(773, 10, 223, 32);
+		panel_9.add(btnNewButton_9_1_2_1_1_1_1_1_1);
+		
 		JPanel panel_10 = new JPanel();
 		panel_10.setBackground(new Color(72, 61, 139));
-		tabbedPane_1.addTab("LRS", null, panel_10, null);
+		tabbedPane_1.addTab("", null, panel_10, null);
 		panel_10.setLayout(null);
 		
 		JLabel lblNewLabel_7_1 = new JLabel("Enter Student Name to Remove ");
@@ -1137,7 +1328,7 @@ public class DashBoard {
 		JButton btnNewButton_6_1 = new JButton("Remove");
 		btnNewButton_6_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(null, "are you sure you want to delete this book it will not be restored",null, JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+				int result = JOptionPane.showConfirmDialog(null, "are you sure you want to remove  this student ",null, JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
 				if(result==JOptionPane.YES_OPTION) {
 					
 					 MongoClient mongoClient = null;
@@ -1147,21 +1338,31 @@ public class DashBoard {
 		                  MongoCollection<Document> collection = database.getCollection("newUser");
 		                  collection.deleteOne(Filters.eq("Name", textField_16.getText()));
 		                  System.out.println("book Deleted");
-		                  JOptionPane.showMessageDialog(frmMuetLibraryManagement, "Book Deleted Successfulyy");
+		                  JOptionPane.showMessageDialog(frmMuetLibraryManagement, "student  removed");
 					}
 					catch (Exception e2) {System.out.println(e2.getMessage());}
 					
 				}
-				else {JOptionPane.showMessageDialog(frmMuetLibraryManagement, "Good don't delete books they are important");}
+				else {JOptionPane.showMessageDialog(frmMuetLibraryManagement, "you just save one student");}
 				
 			}
 		});
 		btnNewButton_6_1.setBounds(413, 360, 85, 21);
 		panel_10.add(btnNewButton_6_1);
 		
+		JButton btnNewButton_9_1_2_1_1_1_1_1_1_1 = new JButton("Back to Admin_DashBoard");
+		btnNewButton_9_1_2_1_1_1_1_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(5);
+			}
+		});
+		btnNewButton_9_1_2_1_1_1_1_1_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2_1_1_1_1_1_1_1.setBounds(773, 10, 223, 32);
+		panel_10.add(btnNewButton_9_1_2_1_1_1_1_1_1_1);
+		
 		JPanel panel_11 = new JPanel();
 		panel_11.setBackground(new Color(102, 102, 102));
-		tabbedPane_1.addTab("LAB", null, panel_11, null);
+		tabbedPane_1.addTab("", null, panel_11, null);
 		panel_11.setLayout(null);
 		
 		JLabel lblNewLabel_6 = new JLabel("Enter Book Name");
@@ -1171,8 +1372,9 @@ public class DashBoard {
 		panel_11.add(lblNewLabel_6);
 		
 		textField_8 = new JTextField();
-		textField_8.setForeground(Color.WHITE);
-		textField_8.setBackground(Color.GRAY);
+		textField_8.setFont(new Font("Tahoma", Font.BOLD, 15));
+		textField_8.setForeground(Color.BLACK);
+		textField_8.setBackground(Color.WHITE);
 		textField_8.setBounds(385, 193, 210, 36);
 		panel_11.add(textField_8);
 		textField_8.setColumns(10);
@@ -1184,9 +1386,10 @@ public class DashBoard {
 		panel_11.add(lblNewLabel_6_1);
 		
 		textField_9 = new JTextField();
-		textField_9.setForeground(Color.WHITE);
+		textField_9.setFont(new Font("Tahoma", Font.BOLD, 15));
+		textField_9.setForeground(Color.BLACK);
 		textField_9.setColumns(10);
-		textField_9.setBackground(Color.GRAY);
+		textField_9.setBackground(Color.WHITE);
 		textField_9.setBounds(385, 313, 210, 36);
 		panel_11.add(textField_9);
 		
@@ -1197,9 +1400,10 @@ public class DashBoard {
 		panel_11.add(lblNewLabel_6_1_1);
 		
 		textField_10 = new JTextField();
-		textField_10.setForeground(Color.WHITE);
+		textField_10.setFont(new Font("Tahoma", Font.BOLD, 15));
+		textField_10.setForeground(Color.BLACK);
 		textField_10.setColumns(10);
-		textField_10.setBackground(Color.GRAY);
+		textField_10.setBackground(Color.WHITE);
 		textField_10.setBounds(385, 455, 210, 36);
 		panel_11.add(textField_10);
 		
@@ -1224,7 +1428,7 @@ public class DashBoard {
 							    collection.insertOne(dc);
 						}
 					
-				    JOptionPane.showMessageDialog(null, "Data Added successfully into Collection");
+				    JOptionPane.showMessageDialog(null, "New Book added successfully ");
 //				    tabbedPane_1.setSelectedIndex(1);	
 				    textField_8.setText("");
 				    textField_9.setText("");
@@ -1241,9 +1445,19 @@ public class DashBoard {
 		btnNewButton_5.setBounds(445, 525, 85, 21);
 		panel_11.add(btnNewButton_5);
 		
+		JButton btnNewButton_9_1_2_1_1_1_1_1_1_1_1 = new JButton("Back to Admin_DashBoard");
+		btnNewButton_9_1_2_1_1_1_1_1_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(5);
+			}
+		});
+		btnNewButton_9_1_2_1_1_1_1_1_1_1_1.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_2_1_1_1_1_1_1_1_1.setBounds(773, 10, 223, 32);
+		panel_11.add(btnNewButton_9_1_2_1_1_1_1_1_1_1_1);
+		
 		JPanel panel_14 = new JPanel();
 		panel_14.setBackground(new Color(0, 204, 153));
-		tabbedPane_1.addTab("New tab", null, panel_14, null);
+		tabbedPane_1.addTab("", null, panel_14, null);
 		panel_14.setLayout(null);
 		
 		JScrollPane scrollPane_3 = new JScrollPane();
@@ -1263,7 +1477,7 @@ public class DashBoard {
 		                  collection.deleteOne(Filters.eq("issuedbookname", list.getSelectedValue()));
 		                  
 		                  JOptionPane.showMessageDialog(frmMuetLibraryManagement, "Book  returned Successfulyy");
-		                  tabbedPane_1.setSelectedIndex(5);
+		                  tabbedPane_1.setSelectedIndex(4);
 		                  
 					}
 					catch (Exception e2) {System.out.println(e2.getMessage());}
@@ -1280,6 +1494,16 @@ public class DashBoard {
 		lblNewLabel_1_2_1_1.setFont(new Font("Rockwell", Font.BOLD, 40));
 		lblNewLabel_1_2_1_1.setBounds(10, 120, 952, 87);
 		panel_14.add(lblNewLabel_1_2_1_1);
+		
+		JButton btnNewButton_9_1_3_1_1_2 = new JButton("Back to S_DashBoard");
+		btnNewButton_9_1_3_1_1_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane_1.setSelectedIndex(4);
+			}
+		});
+		btnNewButton_9_1_3_1_1_2.setFont(new Font("Yu Gothic Light", Font.BOLD, 15));
+		btnNewButton_9_1_3_1_1_2.setBounds(10, 10, 190, 32);
+		panel_14.add(btnNewButton_9_1_3_1_1_2);
 
 	}
 }
